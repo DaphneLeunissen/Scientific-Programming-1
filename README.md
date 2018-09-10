@@ -1,2 +1,2 @@
 # ScientificProgramming1
-Assignment 1 Sever-Client Interaction 
+Assignment 1 Server-Client Interaction 
