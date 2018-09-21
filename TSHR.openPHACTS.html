@@ -20,10 +20,10 @@
 	<script type="text/javascript">
   
 var uniprotGene = 'http://identifiers.org/uniprot/P16473'		// assign the target gene with the uniprot identifier to the variable uniprotGene
-var node = document.createElement("li");						// create a list element
+var node = document.createElement("li");				// create a list element
 var textnode = document.createTextNode(uniprotGene);			// create a textnode with the link called in the gene variable
-node.appendChild(textnode);										// append the text to the list 
-document.getElementById("uri").appendChild(node);				// this document property will return the identified node 
+node.appendChild(textnode);						// append the text to the list 
+document.getElementById("uri").appendChild(node);			// this document property will return the identified node 
 
 // get access to the openPHACTS database
 var targetService = new TargetSearch(
@@ -32,7 +32,7 @@ var targetService = new TargetSearch(
 
 //	
 var handleDrugList = function(success, status, jsonData) {
-	  // counting the json objects, save these in jsonData.items and return each object. In which the object is a molecule.
+	// counting the json objects, save these in jsonData.items and return each object. In which the object is a molecule.
    var objectCount = jsonData.items.length;
    for (var i = 0; i < objectCount; i++) {
       object = jsonData.items[i]
