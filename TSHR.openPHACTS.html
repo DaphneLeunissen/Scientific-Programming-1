@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>TSHR openPHACTS</title>
+	
+	 <!-- ops.js , load libraries-->   
+	<script type="text/javascript" src="https://egonw.github.io/pils/lib/purl.js"></script>
+	<script type="text/javascript" src="https://egonw.github.io/pils/lib/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="https://egonw.github.io/pils/lib/d3.v3.min.js"></script>
+	<script type="text/javascript" src="https://egonw.github.io/pils/src/combined.js"></script>
+
+</head>
+<body>
+	<h3>About TSHR</h3>
+	<div id="uri"></div>
+	<h4>Top 10 drugs that target TSHR</h4>
+	<p><div id="list"></div></p>
+	
+	<script type="text/javascript">
+  
+var uniprotGene = 'http://identifiers.org/uniprot/P16473'		// assign the target gene with the uniprot identifier to the variable uniprotGene
+var node = document.createElement("li");						// create a list element
+var textnode = document.createTextNode(uniprotGene);			// create a textnode with the link called in the gene variable
+node.appendChild(textnode);										// append the text to the list 
+document.getElementById("uri").appendChild(node);				// this document property will return the identified node 
+
+// get access to the openPHACTS database
+var targetService = new TargetSearch(
+	"https://beta.openphacts.org/2.2", "835acaeb", "bd4c19f530e1783a5d3d46585e765897"       
+);
+
+//	
+var handleDrugList = function(success, status, jsonData) {
+	  // counting the json objects, save these in jsonData.items and return each object. In which the object is a molecule.
+   var objectCount = jsonData.items.length;
+   for (var i = 0; i < objectCount; i++) {
+      object = jsonData.items[i]
+      if (object.hasMolecule) {
+	  // create html table content as a list, containing the molecules. (same as described above)
+        var node = document.createElement("li");
+        var textnode = document.createTextNode(object.hasMolecule._about);
+        node.appendChild(textnode);
+        document.getElementById("list").appendChild(node);
+		}
+	}
+};
+	
+// search for drugs that target TSHR in the target/pharmacology part of the OpenPHACTS database using the uniprot id of the gene and the callback function. 
+targetService.targetPharmacology(     													
+	uniprotGene, null, null, null, null, null, null, null, null, null,
+    null, null, null, null, null, null, null, null, null,
+    null, null,		
+	handleDrugList
+);
+	</script>
+</body>
+</html> 

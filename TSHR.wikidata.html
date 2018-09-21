@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> TSHR wikidata </title> 
+	  <script src="https://cdn.rawgit.com/maxlath/wikidata-sdk/master/dist/wikidata-sdk.js"></script>
+</head>
+<body>
+	<form id="frm">
+    Gene: <input type="text" name="inputGene" value="TSHR">   <!-- add my input gene to the form (container) -->
+	</form>
+  <h3>Wikidata information</h3>
+  <pre id="output"></pre>
+  <script type="text/javascript">
+  
+	// this document property will return the identified gene from the form and save it in gene. 
+	const inputGene = document.getElementById("frm")[0].value;
+  
+	// The SPARQL code below will get the uniprot id from wikidata which consists of selecting data where the label is equal to the inputGene (THSR)/encoded protein
+	// In which the P-numbers are the property numbers used in wikidata. 
+	// The information that will be retrieved (from top to bottom): wikidata identifier, gene name, uniprot id, species id, species name, genetic associations, 
+	// names of the genetic associations and the last one will give the full name of the protein coding gene. 
+
+    const sparql = `
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	select distinct * where {
+	    ?qid rdfs:label '${inputGene}'@en .		
+        ?qid wdt:P688 ?inputGene .				
+        ?inputGene wdt:P352 ?uid.				
+		?inputGene wdt:P703 ?taxon .				
+		?taxon wdt:P225 ?taxon_name.		
+		?qid wdt:P2293 ?assoc .				
+		?assoc rdfs:label ?assoc_name filter (lang(?assoc_name) = "en"). 
+        ?inputGene rdfs:label ?label filter (lang(?label) = "en") .
+        }`;
+  
+	// query wikidata and by setting the value of innerHTML will replace the output by the response of the wikidata query (function response).    
+    fetch(
+        wdk.sparqlQuery(sparql)
+    ).then( response => response.json()
+    ).then( wdk.simplify.sparqlResults
+    ).then(
+		function (response) {
+			document.getElementById('output').innerHTML =
+			JSON.stringify(response, undefined, 2);
+		}
+	)				
+  </script>
+</body>
+</html>
